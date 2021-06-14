@@ -6,7 +6,7 @@
 /*   By: admadene <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/28 10:53:11 by admadene          #+#    #+#             */
-/*   Updated: 2021/06/14 17:20:09 by admadene         ###   ########.fr       */
+/*   Updated: 2021/06/14 17:34:48 by admadene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,26 +128,26 @@ void	*routine_philo(void *data)
 		gettimeofday(&philo->info->tv, &philo->info->tz);
 		philo->last_meal = philo->info->tv.tv_usec;
 
-		printf("%ld%d %d is thinking\n", (philo->info->tv.tv_sec - philo->info->tzero.tv_sec), philo->info->tv.tv_usec / 1000, philo->id);
+		printf("%ld%03.3d %d is thinking\n", (philo->info->tv.tv_sec - philo->info->tzero.tv_sec), philo->info->tv.tv_usec / 1000, philo->id);
 		pthread_mutex_lock(&philo->mutex_fork);
 
 		gettimeofday(&philo->info->tv, &philo->info->tz);
-		//printf("%d %d has taken a fork\n", (philo->info->tv.tv_usec - philo->info->tzero) / 1000, philo->id);
+		printf("%ld%03.3d %d has taken a fork\n", (philo->info->tv.tv_sec - philo->info->tzero.tv_sec), philo->info->tv.tv_usec / 1000,  philo->id);
 		pthread_mutex_lock(&(philo + left(philo->id, philo->info->nbr_philo))->mutex_fork);
 
 		gettimeofday(&philo->info->tv, &philo->info->tz);
-		//printf("%d %d has taken a fork\n", (philo->info->tv.tv_usec - philo->info->tzero) / 1000, philo->id);
+		printf("%ld%03.3d %d has taken a fork\n", (philo->info->tv.tv_sec - philo->info->tzero.tv_sec), philo->info->tv.tv_usec / 1000, philo->id);
 
 		gettimeofday(&philo->info->tv, &philo->info->tz);
 		philo->last_meal = philo->info->tv.tv_usec;
-		//printf("%d %d is eating\n", (philo->info->tv.tv_usec - philo->info->tzero) / 1000, philo->id);
+		printf("%ld%03.3d %d is eating\n", (philo->info->tv.tv_sec - philo->info->tzero.tv_sec), philo->info->tv.tv_usec / 1000, philo->id);
 		usleep(philo->info->time_to_eat * 1000);
 		pthread_mutex_unlock(&philo->mutex_fork);
 		pthread_mutex_unlock(&(philo + left(philo->id, philo->info->nbr_philo))->mutex_fork);
 
 
 		gettimeofday(&philo->info->tv, &philo->info->tz);
-		//printf("%d %d is sleeping\n", (philo->info->tv.tv_usec - philo->info->tzero) / 1000, philo->id);
+		printf("%ld%03.3d %d is sleeping\n", (philo->info->tv.tv_sec - philo->info->tzero.tv_sec), philo->info->tv.tv_usec / 1000, philo->id);
 		usleep(philo->info->time_to_sleep * 1000);
 	}
 

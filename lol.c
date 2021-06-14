@@ -28,7 +28,7 @@ int main ()
 	while (1)
 	{
 		gettimeofday(&tv, &tz);
-		printf("%ld%d\n", (tv.tv_sec - tzero.tv_sec) % 100, tv.tv_usec / 1000);
+		printf("%ld%03.3d\n", (tv.tv_sec - tzero.tv_sec) % 100, tv.tv_usec / 1000);
 	}
 
 }
