@@ -6,7 +6,7 @@
 /*   By: admadene <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/28 10:53:11 by admadene          #+#    #+#             */
-/*   Updated: 2021/06/04 17:24:50 by admadene         ###   ########.fr       */
+/*   Updated: 2021/06/14 17:20:09 by admadene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,9 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-
-
 typedef struct s_info
 {	
-	suseconds_t		tzero;
+	struct timeval	tzero;
 	struct timeval	tv;
 	struct timezone	tz;
 	int				nbr_philo;
@@ -30,13 +28,14 @@ typedef struct s_info
 	int				each_must_eat;
 }				t_info;
 
-
 typedef struct s_philo
 {
 	int				id;
 	pthread_t		thread_philo;
 	pthread_mutex_t	mutex_fork;
 	t_info			*info;
+	suseconds_t		last_meal;
+	int				nbr_meal;
 }				t_philo;
 
 int	ft_atoi(char *str)
@@ -81,7 +80,7 @@ int	init_info(char **av, t_info **info)
 	}
 	if (gettimeofday(&(*info)->tv, &(*info)->tz))
 		return (0);
-	(*info)->tzero = (*info)->tv.tv_usec;
+	(*info)->tzero = (*info)->tv;
 	return (1);
 }
 
@@ -94,7 +93,7 @@ void	print_philo_info(t_info *info)
 	printf("time to eat %d\n", info->time_to_eat);
 	printf("time to sleep %d\n", info->time_to_sleep);
 	printf("each must eat %d\n", info->each_must_eat);
-	printf("Tv = %ld %d, T0 = %d [%d]\n", info->tv.tv_sec, info->tv.tv_usec, info->tv.tv_usec - info->tzero, info->tzero);
+	printf("Tv = %ld %d, T0 = %d [%d]\n", info->tv.tv_sec, info->tv.tv_usec, info->tv.tv_usec - info->tzero.tv_usec, info->tzero.tv_usec);
 }
 
 int		right(int index, int max)
@@ -110,6 +109,7 @@ int		left(int index, int max)
 		return (-1);
 	return (max - 1);
 }
+
 int		getrandom()
 {
 	struct	timeval tv;
@@ -118,26 +118,39 @@ int		getrandom()
 	return (tv.tv_usec % 10);
 
 }
+
 void	*routine_philo(void *data)
 {
 	t_philo *philo = (t_philo *)data;
-	
-	gettimeofday(&philo->info->tv, &philo->info->tz);
-	printf("%d %d is thinking\n", philo->info->tv.tv_usec - philo->info->tzero, philo->id);
-	pthread_mutex_lock(&philo->mutex_fork);
-	gettimeofday(&philo->info->tv, &philo->info->tz);
-	printf("%d %d has taken a fork\n", philo->info->tv.tv_usec - philo->info->tzero, philo->id);
-	pthread_mutex_lock(&(philo + left(philo->id, philo->info->nbr_philo))->mutex_fork);
-	gettimeofday(&philo->info->tv, &philo->info->tz);
-	printf("%d %d has taken a fork\n", philo->info->tv.tv_usec - philo->info->tzero, philo->id);
-	gettimeofday(&philo->info->tv, &philo->info->tz);
-	printf("%d %d is eating\n", philo->info->tv.tv_usec - philo->info->tzero, philo->id);
-	usleep(philo->info->time_to_eat);
-	pthread_mutex_unlock(&philo->mutex_fork);
-	pthread_mutex_unlock(&(philo + left(philo->id, philo->info->nbr_philo))->mutex_fork);
-	gettimeofday(&philo->info->tv, &philo->info->tz);
-	printf("%d %d is sleeping\n", philo->info->tv.tv_usec - philo->info->tzero, philo->id);
-	usleep(philo->info->time_to_sleep);
+
+	while (1)
+	{	
+		gettimeofday(&philo->info->tv, &philo->info->tz);
+		philo->last_meal = philo->info->tv.tv_usec;
+
+		printf("%ld%d %d is thinking\n", (philo->info->tv.tv_sec - philo->info->tzero.tv_sec), philo->info->tv.tv_usec / 1000, philo->id);
+		pthread_mutex_lock(&philo->mutex_fork);
+
+		gettimeofday(&philo->info->tv, &philo->info->tz);
+		//printf("%d %d has taken a fork\n", (philo->info->tv.tv_usec - philo->info->tzero) / 1000, philo->id);
+		pthread_mutex_lock(&(philo + left(philo->id, philo->info->nbr_philo))->mutex_fork);
+
+		gettimeofday(&philo->info->tv, &philo->info->tz);
+		//printf("%d %d has taken a fork\n", (philo->info->tv.tv_usec - philo->info->tzero) / 1000, philo->id);
+
+		gettimeofday(&philo->info->tv, &philo->info->tz);
+		philo->last_meal = philo->info->tv.tv_usec;
+		//printf("%d %d is eating\n", (philo->info->tv.tv_usec - philo->info->tzero) / 1000, philo->id);
+		usleep(philo->info->time_to_eat * 1000);
+		pthread_mutex_unlock(&philo->mutex_fork);
+		pthread_mutex_unlock(&(philo + left(philo->id, philo->info->nbr_philo))->mutex_fork);
+
+
+		gettimeofday(&philo->info->tv, &philo->info->tz);
+		//printf("%d %d is sleeping\n", (philo->info->tv.tv_usec - philo->info->tzero) / 1000, philo->id);
+		usleep(philo->info->time_to_sleep * 1000);
+	}
+
 	return (NULL);
 }
 
@@ -160,7 +173,6 @@ int		init_philo(t_philo **philo, t_info *info)
 	return (1);
 }
 
-
 int	philo_life(t_philo *philo, t_info *info)
 {
 	int	i;
@@ -178,6 +190,14 @@ int	philo_life(t_philo *philo, t_info *info)
 	return (0);
 }
 
+/*
+   void	*check_philo(void *data)
+   {
+   while ()
+
+
+   }
+   */
 
 int	main(const int ac, char **av)
 {
@@ -193,6 +213,27 @@ int	main(const int ac, char **av)
 	if (!init_philo(&philo, info))
 		return (-1);
 	philo_life(philo, info);
-	sleep(1);
 	return (0);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
