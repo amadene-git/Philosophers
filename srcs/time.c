@@ -6,7 +6,7 @@
 /*   By: admadene <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/21 16:36:55 by admadene          #+#    #+#             */
-/*   Updated: 2021/06/22 14:54:53 by admadene         ###   ########.fr       */
+/*   Updated: 2021/06/22 17:47:44 by admadene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,18 +38,19 @@ long int	get_time_us(void)
 
 void	ft_sleep(long int ms, int *is_dead)
 {
-	long int 	tzero;
-	int			i = 0;
-	int			a = 0;
-	
+	long int	tzero;
+	int			i;
+	int			a;
+
+	i = 0;
+	a = 0;
 	tzero = get_time_us();
 	while (++i < ms)
 	{
 		if (*is_dead)
 			return ;
 		usleep(1000 - a);
-		a = (get_time_us() - tzero)  % 1000;
+		a = (get_time_us() - tzero) % 1000;
 	}
 	usleep(1000 - a * 2);
 }
-

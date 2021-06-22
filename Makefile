@@ -2,6 +2,8 @@ NAME 	=	philo
 
 SRCS	=	srcs/main.c\
 			srcs/time.c\
+			srcs/philo_routine.c\
+			srcs/philo_utils.c\
 
 OBJS	=	${SRCS:.c=.o}
 

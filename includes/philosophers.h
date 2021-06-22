@@ -6,7 +6,7 @@
 /*   By: admadene <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/21 15:46:31 by admadene          #+#    #+#             */
-/*   Updated: 2021/06/22 14:55:23 by admadene         ###   ########.fr       */
+/*   Updated: 2021/06/22 17:48:31 by admadene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,10 @@
 # include <stdlib.h>
 # include <unistd.h>
 
-typedef struct	s_info
+typedef struct s_info
 {
 	long int		tzero;
-	long int 		time;
+	long int		time;
 	int				nbr_philo;
 	int				time_to_die;
 	int				time_to_eat;
@@ -31,7 +31,7 @@ typedef struct	s_info
 	int				is_die;
 }				t_info;
 
-typedef struct	s_philo
+typedef struct s_philo
 {
 	int				id;
 	pthread_t		thread_philo;
@@ -45,5 +45,16 @@ typedef struct	s_philo
 long int	get_time_ms(void);
 long int	get_time_us(void);
 void		ft_sleep(long int ms, int *is_dead);
-
+void		philo_thinking(t_philo *philo);
+void		philo_take_fork(t_philo *philo);
+void		philo_eating(t_philo *philo);
+void		philo_sleeping(t_philo *philo);
+void		*routine_philo(void *data);
+int			ft_atoi(char *str);
+int			init_info(char **av, t_info **info);
+int			right(int index, int max);
+int			left(int index, int max);
+int			init_philo(t_philo **philo, t_info *info);
+int			philo_life(t_philo *philo, t_info *info);
+void		*check_die(void *data);
 #endif
