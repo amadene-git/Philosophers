@@ -22,12 +22,12 @@ void	philo_thinking(t_philo *philo)
 
 void	philo_take_fork(t_philo *philo)
 {
-	pthread_mutex_lock(&philo->mutex_fork);
+	pthread_mutex_lock(&(philo + left(philo->id, \
+	philo->info->nbr_philo))->mutex_fork);
 	if (!philo->info->is_die)
 		printf("%ld %d has taken a fork\n", \
 		get_time_ms() - philo->info->tzero, philo->id);
-	pthread_mutex_lock(&(philo + left(philo->id, \
-	philo->info->nbr_philo))->mutex_fork);
+	pthread_mutex_lock(&philo->mutex_fork);
 	if (!philo->info->is_die)
 		printf("%ld %d has taken a fork\n", \
 		get_time_ms() - philo->info->tzero, philo->id);

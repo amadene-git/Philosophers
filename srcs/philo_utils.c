@@ -12,10 +12,15 @@
 
 #include "philosophers.h"
 
-int	ft_atoi(char *str)
+int	ft_is_digit(char c)
 {
-	long int	nbr;
-	int			neg;
+	return (c >= '0' && c <= '9');
+}
+
+long int	ft_atoli(char *str)
+{
+	long long int	nbr;
+	int		neg;
 
 	neg = 1;
 	nbr = 0;
@@ -23,15 +28,27 @@ int	ft_atoi(char *str)
 		str++;
 	if (*str == '-' && str++)
 		neg = -1;
-	while (*str >= '0' && *str <= '9')
+	while (ft_is_digit(*str))
 	{
 		nbr += (*str - '0') * neg;
 		nbr *= 10;
 		str++;
 	}
+	while (*str == ' ')
+		str++;
+	if (*str)
+		return (-1);
 	nbr /= 10;
 	return (nbr);
 }
+
+int	check_nb(long int nb)
+{
+	if (nb >= 0 && nb <= 2147483647)
+		return (1);
+	return (0);
+}
+
 
 int	init_info(char **av, t_info **info)
 {
@@ -39,18 +56,18 @@ int	init_info(char **av, t_info **info)
 	if (!info)
 		return (0);
 	(*info)->each_must_eat = -1;
-	(*info)->nbr_philo = ft_atoi(*(av++));
-	(*info)->time_to_die = ft_atoi(*(av++));
-	(*info)->time_to_eat = ft_atoi(*(av++));
-	(*info)->time_to_sleep = ft_atoi(*(av++));
+	(*info)->nbr_philo = ft_atoli(*(av++));
+	(*info)->time_to_die = ft_atoli(*(av++));
+	(*info)->time_to_eat = ft_atoli(*(av++));
+	(*info)->time_to_sleep = ft_atoli(*(av++));
 	(*info)->is_die = 0;
-	if ((*info)->nbr_philo < 0 || (*info)->time_to_die < 0 \
-			|| (*info)->time_to_eat < 0 || (*info)->time_to_sleep < 0)
+	if (!check_nb((*info)->nbr_philo) || !check_nb((*info)->time_to_die) \
+	|| !check_nb((*info)->time_to_eat) || !check_nb((*info)->time_to_sleep))
 		return (0);
 	if (*av)
 	{
-		(*info)->each_must_eat = ft_atoi(*av);
-		if ((*info)->each_must_eat < 0)
+		(*info)->each_must_eat = ft_atoli(*av);
+		if (!check_nb((*info)->each_must_eat))
 			return (0);
 	}
 	return (1);

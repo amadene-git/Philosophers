@@ -49,8 +49,14 @@ void	ft_sleep(long int ms, int *is_dead)
 	{
 		if (*is_dead)
 			return ;
-		usleep(1000 - a);
-		a = (get_time_us() - tzero) % 1000;
+		if (a < 1000)
+		{
+			usleep(1000 - a);
+			a = (get_time_us() - tzero) - 1000 * i;
+		}
+		else
+			a -= 1000;
+	//	printf("a = %d\n", a);
 	}
-	usleep(1000 - a * 2);
+	usleep(1000 - a * 3);
 }

@@ -23,11 +23,11 @@ typedef struct s_info
 {
 	long int		tzero;
 	long int		time;
-	int				nbr_philo;
-	int				time_to_die;
-	int				time_to_eat;
-	int				time_to_sleep;
-	int				each_must_eat;
+	long int		nbr_philo;
+	long int		time_to_die;
+	long int		time_to_eat;
+	long int		time_to_sleep;
+	long int		each_must_eat;
 	int				is_die;
 }				t_info;
 

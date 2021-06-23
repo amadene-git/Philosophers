@@ -7,7 +7,7 @@ SRCS	=	srcs/main.c\
 
 OBJS	=	${SRCS:.c=.o}
 
-FLAG	=	-Wall -Wextra -Werror
+FLAG	=	-Wall -Wextra -Werror -g
 
 HEADER	=	-I includes
 
@@ -21,7 +21,7 @@ CC		=	clang
 all		:	${NAME}
 
 ${NAME}	:	${OBJS}
-				${CC}  ${FLAG} -o ${NAME} ${OBJS}
+				${CC}  ${FLAG} -o ${NAME} ${OBJS} -lpthread
 
 
 clean	:
