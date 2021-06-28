@@ -77,11 +77,16 @@ int	main(const int ac, char **av)
 	if (ac < 5 || ac > 6 || !init_info(av + 1, &info))
 	{
 		write(2, "Error bad arguments\n", 20);
-		return (-1);
+		free(info);
+        return (-1);
 	}
 	if (!init_philo(&philo, info))
-		return (-1);
-	philo_life(philo, info);
+    {
+        free(info);
+	    free(philo);
+        return (-1);
+    }
+    philo_life(philo, info);
 	check_die(philo);
 	free(philo);
 	free(info);
