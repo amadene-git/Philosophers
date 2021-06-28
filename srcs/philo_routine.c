@@ -6,7 +6,7 @@
 /*   By: admadene <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/22 17:31:50 by admadene          #+#    #+#             */
-/*   Updated: 2021/06/22 17:34:08 by admadene         ###   ########.fr       */
+/*   Updated: 2021/06/28 15:39:37 by admadene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,8 @@ void	philo_sleeping(t_philo *philo)
 		printf("%ld %d is sleeping\n", \
 		get_time_ms() - philo->info->tzero, philo->id);
 	if (!philo->info->is_die)
-		ft_sleep(philo->info->time_to_sleep, &philo->info->is_die, get_time_us());
+		ft_sleep(philo->info->time_to_sleep, \
+		&philo->info->is_die, get_time_us());
 }
 
 void	*routine_philo(void *data)

@@ -6,29 +6,58 @@
 /*   By: admadene <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/21 15:45:33 by admadene          #+#    #+#             */
-/*   Updated: 2021/06/22 17:44:59 by admadene         ###   ########.fr       */
+/*   Updated: 2021/06/28 15:49:41 by admadene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
+int	ft_is_digit(char c)
+{
+	return (c >= '0' && c <= '9');
+}
+
+long int	ft_atoli(char *str)
+{
+	long long int	nbr;
+	int				neg;
+
+	neg = 1;
+	nbr = 0;
+	while (*str == ' ')
+		str++;
+	if (*str == '-' && str++)
+		neg = -1;
+	while (ft_is_digit(*str))
+	{
+		nbr += (*str - '0') * neg;
+		nbr *= 10;
+		str++;
+	}
+	while (*str == ' ')
+		str++;
+	if (*str)
+		return (-1);
+	nbr /= 10;
+	return (nbr);
+}
+
 void	*check_die(void *data)
 {
 	t_philo	*philo;
-    int     i;
+	int		i;
 
-    i = 0;
+	i = 0;
 	philo = (t_philo *)data;
 	while (philo->nbr_meal < philo->info->each_must_eat \
 	|| philo->info->each_must_eat == -1)
 	{
-        if (philo->info->is_die)
+		if (philo->info->is_die)
 			return (NULL);
-		if (get_time_ms() - philo->last_meal >= philo->info->time_to_die && \
+		if ((get_time_ms() - philo->last_meal >= philo->info->time_to_die && \
 		(philo->nbr_meal < philo->info->each_must_eat \
-		|| philo->info->each_must_eat == -1))
+		|| philo->info->each_must_eat == -1)) && !usleep(100))
 		{
-			usleep(100);
 			if (!philo->info->is_die)
 			{
 				philo->info->is_die = 1;
@@ -37,8 +66,8 @@ void	*check_die(void *data)
 			}
 			return (NULL);
 		}
-	    usleep(1000);
-    }
+		usleep(1000);
+	}
 	return (NULL);
 }
 
@@ -74,19 +103,21 @@ int	main(const int ac, char **av)
 	t_info	*info;
 	t_philo	*philo;
 
+	info = NULL;
+	philo = NULL;
 	if (ac < 5 || ac > 6 || !init_info(av + 1, &info))
 	{
 		write(2, "Error bad arguments\n", 20);
 		free(info);
-        return (-1);
+		return (-1);
 	}
 	if (!init_philo(&philo, info))
-    {
-        free(info);
-	    free(philo);
-        return (-1);
-    }
-    philo_life(philo, info);
+	{
+		free(info);
+		free(philo);
+		return (-1);
+	}
+	philo_life(philo, info);
 	check_die(philo);
 	free(philo);
 	free(info);

@@ -6,7 +6,7 @@
 /*   By: admadene <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/21 15:46:31 by admadene          #+#    #+#             */
-/*   Updated: 2021/06/22 17:48:31 by admadene         ###   ########.fr       */
+/*   Updated: 2021/06/28 15:35:02 by admadene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ void		philo_take_fork(t_philo *philo);
 void		philo_eating(t_philo *philo);
 void		philo_sleeping(t_philo *philo);
 void		*routine_philo(void *data);
-int			ft_atoi(char *str);
+long int	ft_atoli(char *str);
 int			init_info(char **av, t_info **info);
 int			right(int index, int max);
 int			left(int index, int max);
