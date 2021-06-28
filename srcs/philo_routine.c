@@ -41,7 +41,7 @@ void	philo_eating(t_philo *philo)
 		printf("%ld %d is eating\n", \
 		get_time_ms() - philo->info->tzero, philo->id);
 	if (!philo->info->is_die)
-		ft_sleep(philo->info->time_to_eat, &philo->info->is_die);
+		ft_sleep(philo->info->time_to_eat, &philo->info->is_die, get_time_us());
 	philo->nbr_meal++;
 	pthread_mutex_unlock(&philo->mutex_fork);
 	pthread_mutex_unlock(&(philo + left(philo->id, \
@@ -54,7 +54,7 @@ void	philo_sleeping(t_philo *philo)
 		printf("%ld %d is sleeping\n", \
 		get_time_ms() - philo->info->tzero, philo->id);
 	if (!philo->info->is_die)
-		ft_sleep(philo->info->time_to_sleep, &philo->info->is_die);
+		ft_sleep(philo->info->time_to_sleep, &philo->info->is_die, get_time_us());
 }
 
 void	*routine_philo(void *data)

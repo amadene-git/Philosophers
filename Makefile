@@ -7,7 +7,7 @@ SRCS	=	srcs/main.c\
 
 OBJS	=	${SRCS:.c=.o}
 
-FLAG	=	-Wall -Wextra -Werror -g
+FLAG	=	-Wall -Wextra -Werror
 
 HEADER	=	-I includes
 

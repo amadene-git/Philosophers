@@ -15,12 +15,14 @@
 void	*check_die(void *data)
 {
 	t_philo	*philo;
+    int     i;
 
+    i = 0;
 	philo = (t_philo *)data;
 	while (philo->nbr_meal < philo->info->each_must_eat \
 	|| philo->info->each_must_eat == -1)
 	{
-		if (philo->info->is_die)
+        if (philo->info->is_die)
 			return (NULL);
 		if (get_time_ms() - philo->last_meal >= philo->info->time_to_die && \
 		(philo->nbr_meal < philo->info->each_must_eat \
@@ -35,7 +37,8 @@ void	*check_die(void *data)
 			}
 			return (NULL);
 		}
-	}
+	    usleep(1000);
+    }
 	return (NULL);
 }
 
@@ -82,6 +85,5 @@ int	main(const int ac, char **av)
 	check_die(philo);
 	free(philo);
 	free(info);
-	info = malloc(65322);
 	return (0);
 }

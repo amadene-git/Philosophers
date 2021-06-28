@@ -44,7 +44,7 @@ typedef struct s_philo
 
 long int	get_time_ms(void);
 long int	get_time_us(void);
-void		ft_sleep(long int ms, int *is_dead);
+void		ft_sleep(long int ms, int *is_dead, long int tzero);
 void		philo_thinking(t_philo *philo);
 void		philo_take_fork(t_philo *philo);
 void		philo_eating(t_philo *philo);

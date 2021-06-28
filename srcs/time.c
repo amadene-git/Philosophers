@@ -36,15 +36,13 @@ long int	get_time_us(void)
 	return (time);
 }
 
-void	ft_sleep(long int ms, int *is_dead)
+void	ft_sleep(long int ms, int *is_dead, long int tzero)
 {
-	long int	tzero;
 	int			i;
 	int			a;
 
 	i = 0;
-	a = 0;
-	tzero = get_time_us();
+    a = 0;
 	while (++i < ms)
 	{
 		if (*is_dead)
@@ -52,11 +50,12 @@ void	ft_sleep(long int ms, int *is_dead)
 		if (a < 1000)
 		{
 			usleep(1000 - a);
-			a = (get_time_us() - tzero) - 1000 * i;
-		}
-		else
-			a -= 1000;
+		    a = 0;
+        }
+        else
+		    a -= 1000;
+		a = ((get_time_us() - tzero) - 1000 * i) + a;
 	//	printf("a = %d\n", a);
 	}
-	usleep(1000 - a * 3);
+	usleep(500);
 }
