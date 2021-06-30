@@ -14,7 +14,6 @@
 
 void	philo_thinking(t_philo *philo)
 {
-	philo->info->time = get_time_ms();
 	if (!philo->info->is_die)
 		printf("%ld %d is thinking\n", \
 		get_time_ms() - philo->info->tzero, philo->id);

@@ -104,6 +104,7 @@ int	philo_life(t_philo *philo, t_info *info)
 		pthread_join((philo + i)->thread_monito, NULL);
 	}
 	i = -1;
+    pthread_mutex_destroy(&(info->mutex_die));
 	while (++i < info->nbr_philo)
 		if (pthread_mutex_destroy(&(philo + i)->mutex_fork))
 			return (0);

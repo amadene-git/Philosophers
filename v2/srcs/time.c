@@ -14,47 +14,48 @@
 
 long int	get_time_ms(void)
 {
-	long int		ms;
-	struct timeval	tv;
-	struct timezone	tz;
+    struct timeval	tv;
 
-	gettimeofday(&tv, &tz);
-	ms = tv.tv_sec * 1000;
-	ms += tv.tv_usec / 1000;
-	return (ms);
+    gettimeofday(&tv, NULL);
+    return (tv.tv_sec * 1000 + tv.tv_usec / 1000);
 }
 
 long int	get_time_us(void)
 {
-	struct timeval	tv;
-	struct timezone	tz;
-	long int		time;
+    struct timeval	tv;
 
-	gettimeofday(&tv, &tz);
-	time = tv.tv_sec * 1000000;
-	time += tv.tv_usec;
-	return (time);
+    gettimeofday(&tv, NULL);
+    return (tv.tv_sec * 1000000 + tv.tv_usec);
+}
+
+int         get_random(void)
+{
+    struct timeval  tv;
+
+    gettimeofday(&tv, NULL);
+    return (tv.tv_usec % 10);
 }
 
 void	ft_sleep(long int ms, int *is_dead, long int tzero)
 {
-	int			i;
-	int			a;
+    int			i;
+    int			a;
 
-	i = 0;
-	a = 0;
-	while (++i < ms)
-	{
-		if (*is_dead)
-			return ;
-		if (a < 1000)
-		{
-			usleep(1000 - a);
-			a = 0;
-		}
-		else
-			a -= 1000;
-		a = ((get_time_us() - tzero) - 1000 * i) + a;
-	}
-	usleep(ms * 1000 - (get_time_us() - tzero));
+    i = 0;
+    a = 0;
+    while (++i < ms)
+    {
+        if (*is_dead || ms * 1000 <= get_time_us() - tzero)
+        {
+            return ;
+        }
+        if (a < 1000)
+        {
+            usleep(1000 - a);
+            a = ((get_time_us() - tzero) - 1000 * i);
+        }
+        else
+            a -= 1000;
+    }
+        usleep(get_random() * 100);
 }
