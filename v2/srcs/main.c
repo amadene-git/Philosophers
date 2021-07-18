@@ -6,7 +6,7 @@
 /*   By: admadene <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/21 15:45:33 by admadene          #+#    #+#             */
-/*   Updated: 2021/06/30 10:57:11 by admadene         ###   ########.fr       */
+/*   Updated: 2021/07/01 19:46:50 by admadene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,20 +54,21 @@ void	*check_die(void *data)
 	{
 		if (philo->info->is_die)
 			return (NULL);
+		
+		pthread_mutex_lock(&philo->mutex_eat);
 		if ((get_time_ms() - philo->last_meal >= philo->info->time_to_die && \
 		(philo->nbr_meal < philo->info->each_must_eat \
 		|| philo->info->each_must_eat == -1)))
 		{
-			pthread_mutex_lock(&(philo->info->mutex_die));
 			if (!philo->info->is_die)
 			{
 				philo->info->is_die = 1;
 				printf("%ld %d is died\n", \
 				get_time_ms() - philo->info->tzero, philo->id);
 			}
-			pthread_mutex_unlock(&(philo->info->mutex_die));
 			return (NULL);
 		}
+		pthread_mutex_unlock(&philo->mutex_eat);
 		usleep(5000);
 	}
 	return (NULL);
@@ -97,17 +98,23 @@ int	philo_life(t_philo *philo, t_info *info)
 			return (0);
 		i += 2;
 	}
+	printf("1\n");
 	i = -1;
 	while (++i < info->nbr_philo)
 	{
+		printf("2\n");
 		pthread_join((philo + i)->thread_philo, NULL);
+		printf("2\n");
 		pthread_join((philo + i)->thread_monito, NULL);
+		printf("2\n");
 	}
+	printf("1\n");
 	i = -1;
     pthread_mutex_destroy(&(info->mutex_die));
 	while (++i < info->nbr_philo)
 		if (pthread_mutex_destroy(&(philo + i)->mutex_fork))
 			return (0);
+	printf("1\n");
 	return (0);
 }
 

@@ -6,7 +6,7 @@
 /*   By: admadene <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/22 17:31:50 by admadene          #+#    #+#             */
-/*   Updated: 2021/06/28 15:39:37 by admadene         ###   ########.fr       */
+/*   Updated: 2021/07/01 19:42:42 by admadene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,11 +36,13 @@ void	philo_eating(t_philo *philo)
 {
 	if (!philo->info->is_die)
 		philo->last_meal = get_time_ms();
+	pthread_mutex_lock(&(philo->mutex_eat));
 	if (!philo->info->is_die)
 		printf("%ld %d is eating\n", \
 		get_time_ms() - philo->info->tzero, philo->id);
 	if (!philo->info->is_die)
 		ft_sleep(philo->info->time_to_eat, &philo->info->is_die, get_time_us());
+	pthread_mutex_unlock(&philo->mutex_eat);
 	philo->nbr_meal++;
 	pthread_mutex_unlock(&philo->mutex_fork);
 	pthread_mutex_unlock(&(philo + left(philo->id, \

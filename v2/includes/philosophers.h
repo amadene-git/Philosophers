@@ -6,7 +6,7 @@
 /*   By: admadene <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/21 15:46:31 by admadene          #+#    #+#             */
-/*   Updated: 2021/06/30 10:44:45 by admadene         ###   ########.fr       */
+/*   Updated: 2021/07/01 19:44:29 by admadene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ typedef struct s_philo
 	int				id;
 	pthread_t		thread_philo;
 	pthread_mutex_t	mutex_fork;
+	pthread_mutex_t	mutex_eat;
 	t_info			*info;
 	long int		last_meal;
 	int				nbr_meal;
