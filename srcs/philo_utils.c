@@ -6,7 +6,7 @@
 /*   By: admadene <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/22 17:39:10 by admadene          #+#    #+#             */
-/*   Updated: 2021/06/28 15:38:59 by admadene         ###   ########.fr       */
+/*   Updated: 2021/09/19 16:14:24 by admadene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,9 @@ int	init_info(char **av, t_info **info)
 		if (!check_nb((*info)->each_must_eat))
 			return (0);
 	}
+	if (pthread_mutex_init(&((*info)->mutex_die), NULL) 
+	|| pthread_mutex_init(&((*info)->mutex_print), NULL))
+		return (0);
 	return (1);
 }
 
@@ -76,3 +79,13 @@ int	init_philo(t_philo **philo, t_info *info)
 	}
 	return (1);
 }
+
+void	philo_print(long int ms, int id, const char *str, pthread_mutex_t *mutex_print)
+{
+	pthread_mutex_lock(mutex_print);
+	printf("%ld %d %s\n", ms, id, str);
+	pthread_mutex_unlock(mutex_print);
+}
+
+
+

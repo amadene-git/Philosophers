@@ -6,7 +6,7 @@
 /*   By: admadene <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/21 15:45:33 by admadene          #+#    #+#             */
-/*   Updated: 2021/06/28 15:49:41 by admadene         ###   ########.fr       */
+/*   Updated: 2021/09/19 17:32:36 by admadene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,14 +56,19 @@ void	*check_die(void *data)
 			return (NULL);
 		if ((get_time_ms() - philo->last_meal >= philo->info->time_to_die && \
 		(philo->nbr_meal < philo->info->each_must_eat \
-		|| philo->info->each_must_eat == -1)) && !usleep(100))
+		|| philo->info->each_must_eat == -1)))
 		{
+		/*	printf("time:%ld last:%ld diff:%ld die:%ld\n",\
+			get_time_ms(), philo->last_meal, get_time_ms() - philo->last_meal,\
+			philo->info->time_to_die);
+		*/	pthread_mutex_lock(&(philo->info->mutex_die));
 			if (!philo->info->is_die)
 			{
 				philo->info->is_die = 1;
-				printf("%ld %d is died\n", \
-				get_time_ms() - philo->info->tzero, philo->id);
+				philo_print(get_time_ms() - philo->info->tzero, philo->id + 1,
+				"is die", &(philo->info->mutex_print));
 			}
+			pthread_mutex_unlock(&(philo->info->mutex_die));
 			return (NULL);
 		}
 		usleep(1000);
@@ -83,7 +88,17 @@ int	philo_life(t_philo *philo, t_info *info)
 		NULL, routine_philo, philo + i) || \
 		pthread_create(&(philo + i)->thread_monito, NULL, check_die, philo + i))
 			return (0);
-		i++;
+		i += 2;
+	}
+	usleep(100);
+	i = 1;
+	while (i < info->nbr_philo)
+	{
+		if (pthread_create(&(philo + i)->thread_philo, \
+		NULL, routine_philo, philo + i) || \
+		pthread_create(&(philo + i)->thread_monito, NULL, check_die, philo + i))
+			return (0);
+		i += 2;
 	}
 	i = -1;
 	while (++i < info->nbr_philo)
@@ -119,6 +134,10 @@ int	main(const int ac, char **av)
 	}
 	philo_life(philo, info);
 	check_die(philo);
+	if (pthread_mutex_destroy(&(info->mutex_die)))
+		return (0);
+	if (pthread_mutex_destroy(&(info->mutex_print)))
+		return (0);
 	free(philo);
 	free(info);
 	return (0);
