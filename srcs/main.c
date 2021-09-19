@@ -6,7 +6,7 @@
 /*   By: admadene <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/21 15:45:33 by admadene          #+#    #+#             */
-/*   Updated: 2021/09/19 17:58:14 by admadene         ###   ########.fr       */
+/*   Updated: 2021/09/19 18:33:42 by admadene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ void	*check_die(void *data)
 			if (!philo->info->is_die)
 			{
 				philo->info->is_die = 1;
-				philo_print(get_time_ms() - philo->info->tzero, philo->id + 1,
+				philo_print(philo->info->tzero, philo->id + 1,
 				"is die", &(philo->info->mutex_print));
 			}
 			pthread_mutex_unlock(&(philo->info->mutex_die));

@@ -6,7 +6,7 @@
 /*   By: admadene <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/22 17:31:50 by admadene          #+#    #+#             */
-/*   Updated: 2021/09/19 17:02:09 by admadene         ###   ########.fr       */
+/*   Updated: 2021/09/19 18:32:27 by admadene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ void	philo_thinking(t_philo *philo)
 {
 	philo->info->time = get_time_ms();
 	if (!philo->info->is_die)
-		philo_print(get_time_ms() - philo->info->tzero, philo->id + 1,
+		philo_print(philo->info->tzero, philo->id + 1,
 		"is thinking", &(philo->info->mutex_print));
 }
 
@@ -25,11 +25,11 @@ void	philo_take_fork(t_philo *philo)
 	pthread_mutex_lock(&(philo + left(philo->id, \
 	philo->info->nbr_philo))->mutex_fork);
 	if (!philo->info->is_die)
-		philo_print(get_time_ms() - philo->info->tzero, philo->id + 1,
+		philo_print(philo->info->tzero, philo->id + 1,
 		"has taken a fork", &(philo->info->mutex_print));
 	pthread_mutex_lock(&philo->mutex_fork);
 	if (!philo->info->is_die)
-		philo_print(get_time_ms() - philo->info->tzero, philo->id + 1,
+		philo_print(philo->info->tzero, philo->id + 1,
 		"has taken a fork", &(philo->info->mutex_print));
 }
 
@@ -38,7 +38,7 @@ void	philo_eating(t_philo *philo)
 	if (!philo->info->is_die)
 		philo->last_meal = get_time_ms();
 	if (!philo->info->is_die)
-		philo_print(get_time_ms() - philo->info->tzero, philo->id + 1,
+		philo_print(philo->info->tzero, philo->id + 1,
 		"is eating", &(philo->info->mutex_print));
 	if (!philo->info->is_die)
 		ft_sleep(philo->info->time_to_eat, &philo->info->is_die, get_time_us());
@@ -51,7 +51,7 @@ void	philo_eating(t_philo *philo)
 void	philo_sleeping(t_philo *philo)
 {
 	if (!philo->info->is_die)
-		philo_print(get_time_ms() - philo->info->tzero, philo->id + 1,
+		philo_print(philo->info->tzero, philo->id + 1,
 		"is sleeping", &(philo->info->mutex_print));
 	if (!philo->info->is_die)
 		ft_sleep(philo->info->time_to_sleep, \
