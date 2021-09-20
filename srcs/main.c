@@ -6,40 +6,22 @@
 /*   By: admadene <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/21 15:45:33 by admadene          #+#    #+#             */
-/*   Updated: 2021/09/20 14:44:55 by admadene         ###   ########.fr       */
+/*   Updated: 2021/09/20 15:56:16 by admadene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-int	ft_is_digit(char c)
+void	die(t_philo *philo)
 {
-	return (c >= '0' && c <= '9');
-}
-
-long int	ft_atoli(char *str)
-{
-	long long int	nbr;
-	int				neg;
-
-	neg = 1;
-	nbr = 0;
-	while (*str == ' ')
-		str++;
-	if (*str == '-' && str++)
-		neg = -1;
-	while (ft_is_digit(*str))
+	pthread_mutex_lock(&(philo->info->mutex_die));
+	if (!philo->info->is_die)
 	{
-		nbr += (*str - '0') * neg;
-		nbr *= 10;
-		str++;
+		philo->info->is_die = 1;
+		philo_print(philo->info->tzero, philo->id + 1, \
+				"is die", &(philo->info->mutex_print));
 	}
-	while (*str == ' ')
-		str++;
-	if (*str)
-		return (-1);
-	nbr /= 10;
-	return (nbr);
+	pthread_mutex_unlock(&(philo->info->mutex_die));
 }
 
 void	*check_die(void *data)
@@ -50,38 +32,27 @@ void	*check_die(void *data)
 	i = 0;
 	philo = (t_philo *)data;
 	while (philo->nbr_meal < philo->info->each_must_eat \
-	|| philo->info->each_must_eat == -1)
+			|| philo->info->each_must_eat == -1)
 	{
 		if (philo->info->is_die)
 			return (NULL);
-		if ((get_time_ms() - philo->last_meal >= philo->info->time_to_die && \
+		if ((get_time_ms() - philo->last_meal > philo->info->time_to_die && \
 		(philo->nbr_meal < philo->info->each_must_eat \
 		|| philo->info->each_must_eat == -1)))
 		{
-		/*	printf("time:%ld last:%ld diff:%ld die:%ld\n",\
-			get_time_ms(), philo->last_meal, get_time_ms() - philo->last_meal,\
-			philo->info->time_to_die);
-		*/	pthread_mutex_lock(&(philo->info->mutex_die));
-			if (!philo->info->is_die)
-			{
-				philo->info->is_die = 1;
-				philo_print(philo->info->tzero, philo->id + 1,
-				"is die", &(philo->info->mutex_print));
-			}
-			pthread_mutex_unlock(&(philo->info->mutex_die));
+			die(philo);
 			return (NULL);
 		}
-		usleep(5000);
+		usleep(2000);
 	}
 	return (NULL);
 }
 
-int	philo_life(t_philo *philo, t_info *info)
+int	philo_birth(t_philo *philo, t_info *info)
 {
 	int	i;
 
 	i = 0;
-	(*info).tzero = get_time_ms();
 	while (i < info->nbr_philo)
 	{
 		if (pthread_create(&(philo + i)->thread_philo, \
@@ -100,6 +71,16 @@ int	philo_life(t_philo *philo, t_info *info)
 			return (0);
 		i += 2;
 	}
+	return (1);
+}
+
+int	philo_life(t_philo *philo, t_info *info)
+{
+	int	i;
+
+	(*info).tzero = get_time_ms();
+	if (!philo_birth(philo, info))
+		return (0);
 	i = -1;
 	while (++i < info->nbr_philo)
 	{
@@ -134,9 +115,8 @@ int	main(const int ac, char **av)
 	}
 	philo_life(philo, info);
 	check_die(philo);
-	if (pthread_mutex_destroy(&(info->mutex_die)))
-		return (0);
-	if (pthread_mutex_destroy(&(info->mutex_print)))
+	if (pthread_mutex_destroy(&(info->mutex_die)) || \
+	pthread_mutex_destroy(&(info->mutex_print)))
 		return (0);
 	free(philo);
 	free(info);

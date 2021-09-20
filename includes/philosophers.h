@@ -6,7 +6,7 @@
 /*   By: admadene <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/21 15:46:31 by admadene          #+#    #+#             */
-/*   Updated: 2021/09/19 18:34:00 by admadene         ###   ########.fr       */
+/*   Updated: 2021/09/20 16:15:48 by admadene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,12 +53,16 @@ void		philo_take_fork(t_philo *philo);
 void		philo_eating(t_philo *philo);
 void		philo_sleeping(t_philo *philo);
 void		*routine_philo(void *data);
+int			ft_is_digit(char c);
 long int	ft_atoli(char *str);
+int			check_nb(long int nb);
 int			init_info(char **av, t_info **info);
-int			right(int index, int max);
 int			left(int index, int max);
 int			init_philo(t_philo **philo, t_info *info);
 int			philo_life(t_philo *philo, t_info *info);
 void		*check_die(void *data);
-void    	philo_print(long int tzero, int id, const char *str, pthread_mutex_t *mutex_print);
+void		philo_print(long int tzero, int id, const char *str, \
+			pthread_mutex_t *mutex_print);
+void		die(t_philo *philo);
+int			philo_birth(t_philo *philo, t_info *info);
 #endif

@@ -6,7 +6,7 @@
 /*   By: admadene <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/22 17:39:10 by admadene          #+#    #+#             */
-/*   Updated: 2021/09/20 14:29:24 by admadene         ###   ########.fr       */
+/*   Updated: 2021/09/20 15:51:54 by admadene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,17 +40,10 @@ int	init_info(char **av, t_info **info)
 		if (!check_nb((*info)->each_must_eat))
 			return (0);
 	}
-	if (pthread_mutex_init(&((*info)->mutex_die), NULL) 
+	if (pthread_mutex_init(&((*info)->mutex_die), NULL) \
 	|| pthread_mutex_init(&((*info)->mutex_print), NULL))
 		return (0);
 	return (1);
-}
-
-int	right(int index, int max)
-{
-	if (index < max)
-		return (1);
-	return ((max - 1) * -1);
 }
 
 int	left(int index, int max)
@@ -81,12 +74,10 @@ int	init_philo(t_philo **philo, t_info *info)
 	return (1);
 }
 
-void	philo_print(long int tzero, int id, const char *str, pthread_mutex_t *mutex_print)
+void	philo_print(long int tzero, int id, const char *str, \
+		pthread_mutex_t *mutex_print)
 {
 	pthread_mutex_lock(mutex_print);
 	printf("%ld %d %s\n", get_time_ms() - tzero, id, str);
 	pthread_mutex_unlock(mutex_print);
 }
-
-
-
