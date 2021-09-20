@@ -6,7 +6,7 @@
 /*   By: admadene <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/21 15:45:33 by admadene          #+#    #+#             */
-/*   Updated: 2021/09/19 18:33:42 by admadene         ###   ########.fr       */
+/*   Updated: 2021/09/20 14:44:55 by admadene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ void	*check_die(void *data)
 			pthread_mutex_unlock(&(philo->info->mutex_die));
 			return (NULL);
 		}
-		usleep(1000);
+		usleep(5000);
 	}
 	return (NULL);
 }

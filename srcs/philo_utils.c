@@ -6,7 +6,7 @@
 /*   By: admadene <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/22 17:39:10 by admadene          #+#    #+#             */
-/*   Updated: 2021/09/19 18:33:13 by admadene         ###   ########.fr       */
+/*   Updated: 2021/09/20 14:29:24 by admadene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,8 @@ int	init_info(char **av, t_info **info)
 	(*info)->time_to_sleep = ft_atoli(*(av++));
 	(*info)->is_die = 0;
 	if (!check_nb((*info)->nbr_philo) || !check_nb((*info)->time_to_die) \
-	|| !check_nb((*info)->time_to_eat) || !check_nb((*info)->time_to_sleep))
+	|| !check_nb((*info)->time_to_eat) || !check_nb((*info)->time_to_sleep) \
+	|| !(*info)->nbr_philo)
 		return (0);
 	if (*av)
 	{

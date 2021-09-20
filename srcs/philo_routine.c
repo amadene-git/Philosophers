@@ -6,7 +6,7 @@
 /*   By: admadene <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/22 17:31:50 by admadene          #+#    #+#             */
-/*   Updated: 2021/09/19 18:32:27 by admadene         ###   ########.fr       */
+/*   Updated: 2021/09/20 14:32:34 by admadene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 
 void	philo_thinking(t_philo *philo)
 {
-	philo->info->time = get_time_ms();
 	if (!philo->info->is_die)
 		philo_print(philo->info->tzero, philo->id + 1,
 		"is thinking", &(philo->info->mutex_print));
@@ -27,6 +26,13 @@ void	philo_take_fork(t_philo *philo)
 	if (!philo->info->is_die)
 		philo_print(philo->info->tzero, philo->id + 1,
 		"has taken a fork", &(philo->info->mutex_print));
+	if (philo->info->nbr_philo == 1)
+	{
+		pthread_mutex_unlock(&(philo + left(philo->id, \
+		philo->info->nbr_philo))->mutex_fork);
+		ft_sleep(philo->info->time_to_die, &(philo->info->is_die), get_time_us());
+		return;
+	}
 	pthread_mutex_lock(&philo->mutex_fork);
 	if (!philo->info->is_die)
 		philo_print(philo->info->tzero, philo->id + 1,
@@ -35,8 +41,10 @@ void	philo_take_fork(t_philo *philo)
 
 void	philo_eating(t_philo *philo)
 {
+	pthread_mutex_lock(&(philo->info->mutex_die));
 	if (!philo->info->is_die)
 		philo->last_meal = get_time_ms();
+	pthread_mutex_unlock(&(philo->info->mutex_die));
 	if (!philo->info->is_die)
 		philo_print(philo->info->tzero, philo->id + 1,
 		"is eating", &(philo->info->mutex_print));
@@ -73,7 +81,6 @@ void	*routine_philo(void *data)
 		if (philo->info->is_die)
 			return (NULL);
 		philo_take_fork(philo);
-		// mutex pour proteger le philo
 		philo_eating(philo);
 		if (philo->info->is_die)
 			return (NULL);
