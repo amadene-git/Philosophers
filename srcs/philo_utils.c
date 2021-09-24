@@ -6,7 +6,7 @@
 /*   By: admadene <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/22 17:39:10 by admadene          #+#    #+#             */
-/*   Updated: 2021/09/20 15:51:54 by admadene         ###   ########.fr       */
+/*   Updated: 2021/09/24 15:52:35 by admadene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,10 +74,11 @@ int	init_philo(t_philo **philo, t_info *info)
 	return (1);
 }
 
-void	philo_print(long int tzero, int id, const char *str, \
-		pthread_mutex_t *mutex_print)
+void	philo_print(long int tzero, t_philo *philo, const char *str)
 {
-	pthread_mutex_lock(mutex_print);
-	printf("%ld %d %s\n", get_time_ms() - tzero, id, str);
-	pthread_mutex_unlock(mutex_print);
+	pthread_mutex_lock(&philo->info->mutex_print);
+	if (!philo->info->is_die)
+		printf("%ld %d %s\n", get_time_ms() - tzero, \
+		philo->id + 1, str);
+	pthread_mutex_unlock(&philo->info->mutex_print);
 }
