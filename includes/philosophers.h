@@ -6,7 +6,7 @@
 /*   By: admadene <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/21 15:46:31 by admadene          #+#    #+#             */
-/*   Updated: 2021/09/24 15:45:07 by admadene         ###   ########.fr       */
+/*   Updated: 2021/09/25 02:36:39 by admadene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,12 @@ typedef struct s_info
 	long int		time_to_sleep;
 	long int		each_must_eat;
 	int				is_die;
+	int				i;
+	int				j;
+	char			buffer[400];
 	pthread_mutex_t	mutex_print;
 	pthread_mutex_t	mutex_die;
+	pthread_mutex_t	mutex_a;
 }				t_info;
 
 typedef struct s_philo

@@ -6,7 +6,7 @@
 /*   By: admadene <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/22 17:31:50 by admadene          #+#    #+#             */
-/*   Updated: 2021/09/24 15:45:41 by admadene         ###   ########.fr       */
+/*   Updated: 2021/09/25 02:32:00 by admadene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ void	philo_take_fork(t_philo *philo)
 		pthread_mutex_unlock(&(philo + left(philo->id, \
 		philo->info->nbr_philo))->mutex_fork);
 		ft_sleep(philo->info->time_to_die * 2, \
-		&(philo->info->is_die), get_time_us());
+		&philo->info->is_die, get_time_us());
 		return ;
 	}
 	pthread_mutex_lock(&philo->mutex_fork);
@@ -42,13 +42,13 @@ void	philo_take_fork(t_philo *philo)
 
 void	philo_eating(t_philo *philo)
 {
-	pthread_mutex_lock(&(philo->info->mutex_die));
+	pthread_mutex_lock(&philo->info->mutex_die);
 	if (!philo->info->is_die)
 		philo->last_meal = get_time_ms();
-	pthread_mutex_unlock(&(philo->info->mutex_die));
 	if (!philo->info->is_die)
 		philo_print(philo->info->tzero, philo, \
 		"is eating");
+	pthread_mutex_unlock(&philo->info->mutex_die);
 	if (!philo->info->is_die)
 		ft_sleep(philo->info->time_to_eat, &philo->info->is_die, get_time_us());
 	philo->nbr_meal++;
@@ -72,6 +72,9 @@ void	*routine_philo(void *data)
 	t_philo	*philo;
 
 	philo = (t_philo *)data;
+	philo->info->i++;
+	if (philo->info->i == philo->info->nbr_philo / 2)
+		pthread_mutex_unlock(&philo->info->mutex_a);
 	while ((philo->info->each_must_eat == -1 || \
 	philo->nbr_meal < philo->info->each_must_eat) && \
 	!philo->info->is_die)
