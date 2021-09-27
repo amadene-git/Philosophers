@@ -44,7 +44,8 @@ void	*check_die(void *data)
 			die(philo);
 			return (NULL);
 		}
-		usleep(2000);
+		usleep((philo->info->time_to_die - (get_time_ms() - philo->last_meal) - 10) * 1000);
+		//usleep(2000);
 	}
 	return (NULL);
 }
