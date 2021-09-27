@@ -17,7 +17,7 @@ void	philo_thinking(t_philo *philo)
 	philo_print(philo->info->tzero, philo, \
 	"is thinking");
 	if (philo->info->time_to_sleep == 0)
-		usleep(300);
+		usleep(1000);
 }
 
 void	philo_take_fork(t_philo *philo)
