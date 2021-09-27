@@ -32,22 +32,25 @@ void	*check_die(void *data)
 
 	i = 0;
 	philo = (t_philo *)data;
-	while (philo->nbr_meal < philo->info->each_must_eat \
-			|| philo->info->each_must_eat == -1)
+	while (!philo->info->is_die)
 	{
-		if (philo->info->is_die)
-			return (NULL);
-		if ((get_time_ms() - philo->last_meal > philo->info->time_to_die && \
-		(philo->nbr_meal < philo->info->each_must_eat \
-		|| philo->info->each_must_eat == -1)))
+		if (philo->nbr_meal == philo->info->each_must_eat)
+		{
+			i++;
+			continue;
+		}
+		if (get_time_ms() - philo->last_meal > philo->info->time_to_die)
 		{
 			die(philo);
 			return (NULL);
 		}
-		else if ((philo->info->time_to_die - (get_time_ms() - philo->last_meal) - 10) >= 20)
-			usleep(philo->info->time_to_die - (get_time_ms() - philo->last_meal) - 10);
+		if (i <= philo->info->nbr_philo)
+			i++;
 		else
+		{
+			i = 0;
 			usleep(2000);
+		}
 	}
 	return (NULL);
 }
@@ -61,23 +64,22 @@ int	philo_birth(t_philo *philo, t_info *info)
 	while (i < info->nbr_philo)
 	{
 		if (pthread_create(&(philo + i)->thread_philo, \
-		NULL, routine_philo, philo + i) || \
-		pthread_create(&(philo + i)->thread_monito, NULL, check_die, philo + i))
+		NULL, routine_philo, philo + i))
 			return (0);
 		i += 2;
 	}
 	i = 1;
 	pthread_mutex_lock(&info->mutex_a);
-	usleep(100);
+	//printf("ici\n");
 	while (i < info->nbr_philo)
 	{
 		if (pthread_create(&(philo + i)->thread_philo, \
-		NULL, routine_philo, philo + i) || \
-		pthread_create(&(philo + i)->thread_monito, NULL, check_die, philo + i))
+		NULL, routine_philo, philo + i))
 			return (0);
 		i += 2;
 	}
 	pthread_mutex_unlock(&info->mutex_a);
+	pthread_create(&info->thread_monito, NULL, check_die, philo);
 	return (1);
 }
 
@@ -89,15 +91,19 @@ int	philo_life(t_philo *philo, t_info *info)
 	if (!philo_birth(philo, info))
 		return (0);
 	i = -1;
+
 	while (++i < info->nbr_philo)
 	{
 		pthread_join((philo + i)->thread_philo, NULL);
-		pthread_join((philo + i)->thread_monito, NULL);
 	}
+	pthread_join(philo->info->thread_monito, NULL);
 	i = -1;
 	while (++i < info->nbr_philo)
+	{
+		pthread_mutex_unlock(&(philo + i)->mutex_fork);
 		if (pthread_mutex_destroy(&(philo + i)->mutex_fork))
 			return (0);
+	}
 	return (0);
 }
 
@@ -121,9 +127,10 @@ int	main(const int ac, char **av)
 		return (-1);
 	}
 	philo_life(philo, info);
-	check_die(philo);
+	//check_die(philo);
 	if (pthread_mutex_destroy(&(info->mutex_die)) || \
-	pthread_mutex_destroy(&(info->mutex_print)))
+	pthread_mutex_destroy(&(info->mutex_print)) || \
+	pthread_mutex_destroy(&(info->mutex_a)))
 		return (0);
 	free(philo);
 	free(info);

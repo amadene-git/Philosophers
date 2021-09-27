@@ -32,6 +32,7 @@ typedef struct s_info
 	int				i;
 	int				j;
 	char			buffer[400];
+	pthread_t		thread_monito;
 	pthread_mutex_t	mutex_print;
 	pthread_mutex_t	mutex_die;
 	pthread_mutex_t	mutex_a;
@@ -46,7 +47,6 @@ typedef struct s_philo
 	t_info			*info;
 	long int		last_meal;
 	int				nbr_meal;
-	pthread_t		thread_monito;
 }				t_philo;
 
 long int	get_time_ms(void);

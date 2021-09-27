@@ -43,7 +43,8 @@ int	init_info(char **av, t_info **info)
 			return (0);
 	}
 	if (pthread_mutex_init(&((*info)->mutex_die), NULL) \
-	|| pthread_mutex_init(&((*info)->mutex_print), NULL))
+	|| pthread_mutex_init(&((*info)->mutex_print), NULL) \
+	|| pthread_mutex_init(&((*info)->mutex_a), NULL))
 		return (0);
 	return (1);
 }
@@ -103,7 +104,6 @@ int		litoa_mem(long int nb, char *str, int *lvl)
 
 void	philo_print(long int tzero, t_philo *philo, const char *str)
 {
-
 	int n;
 	int lvl = 0;
 
@@ -116,8 +116,5 @@ void	philo_print(long int tzero, t_philo *philo, const char *str)
 	n += ft_strcpy_endl(str, &philo->info->buffer[n]);
 	if (!philo->info->is_die)
 		write(1, philo->info->buffer, n);
-//	if (!philo->info->is_die)
-//		printf("%ld %d %s\n", get_time_ms() - tzero, \
-//		philo->id + 1, str);
 	pthread_mutex_unlock(&philo->info->mutex_print);
 }
