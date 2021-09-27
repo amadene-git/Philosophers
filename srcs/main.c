@@ -44,8 +44,10 @@ void	*check_die(void *data)
 			die(philo);
 			return (NULL);
 		}
-		usleep((philo->info->time_to_die - (get_time_ms() - philo->last_meal) - 10) * 1000);
-		//usleep(2000);
+		else if ((philo->info->time_to_die - (get_time_ms() - philo->last_meal) - 10) >= 20)
+			usleep(philo->info->time_to_die - (get_time_ms() - philo->last_meal) - 10);
+		else
+			usleep(2000);
 	}
 	return (NULL);
 }
@@ -66,6 +68,7 @@ int	philo_birth(t_philo *philo, t_info *info)
 	}
 	i = 1;
 	pthread_mutex_lock(&info->mutex_a);
+	usleep(100);
 	while (i < info->nbr_philo)
 	{
 		if (pthread_create(&(philo + i)->thread_philo, \
