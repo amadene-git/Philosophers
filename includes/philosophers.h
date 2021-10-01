@@ -6,7 +6,7 @@
 /*   By: admadene <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/21 15:46:31 by admadene          #+#    #+#             */
-/*   Updated: 2021/09/25 02:36:39 by admadene         ###   ########.fr       */
+/*   Updated: 2021/10/01 10:31:20 by admadene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,7 @@ int			init_philo(t_philo **philo, t_info *info);
 int			philo_life(t_philo *philo, t_info *info);
 void		*check_die(void *data);
 void		philo_print(long int tzero, t_philo *philo, const char *str);
-void		die(t_philo *philo);
+int			die(t_philo *philo);
+int			die_2(int *i, int *a);
 int			philo_birth(t_philo *philo, t_info *info);
 #endif

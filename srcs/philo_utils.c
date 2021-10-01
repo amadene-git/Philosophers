@@ -6,7 +6,7 @@
 /*   By: admadene <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/22 17:39:10 by admadene          #+#    #+#             */
-/*   Updated: 2021/10/01 09:36:05 by admadene         ###   ########.fr       */
+/*   Updated: 2021/10/01 10:19:59 by admadene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,10 +79,11 @@ int	init_philo(t_philo **philo, t_info *info)
 	return (1);
 }
 
-
 int	ft_strcpy_endl(const char *src, char *dest)
 {
-	int n = 0;
+	int	n;
+
+	n = 0;
 	while (*src)
 	{
 		*dest++ = *src++;
@@ -93,30 +94,30 @@ int	ft_strcpy_endl(const char *src, char *dest)
 	return (n + 1);
 }
 
-int		litoa_mem(long int nb, char *str, int *lvl)
+int	litoa_mem(long int nb, char *str, int *lvl)
 {
-	int ret;
+	int	ret;
 
 	if (nb > 9)
 		ret = litoa_mem(nb / 10, str, lvl);
 	str[(*lvl)++] = nb % 10 + '0';
 	return (*lvl);
-
 }
 
 void	philo_print(long int tzero, t_philo *philo, const char *str)
 {
-	int n;
-	int lvl = 0;
+	int	n;
+	int	lvl;
 
+	lvl = 0;
 	if (philo->info->is_die)
-		return;
+		return ;
 	pthread_mutex_lock(&philo->info->mutex_print);
 	n = litoa_mem(get_time_ms() - tzero, &philo->info->buffer[0], &lvl);
 	philo->info->buffer[n++] = ' ';
 	lvl = 0;
 	n += litoa_mem(philo->id + 1, &philo->info->buffer[n], &lvl);
-	philo->info->buffer[n++] = ' '; 
+	philo->info->buffer[n++] = ' ';
 	n += ft_strcpy_endl(str, &philo->info->buffer[n]);
 	if (!philo->info->is_die)
 		write(1, philo->info->buffer, n);
