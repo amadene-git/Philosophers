@@ -6,7 +6,7 @@
 /*   By: admadene <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/21 15:45:33 by admadene          #+#    #+#             */
-/*   Updated: 2021/09/25 00:49:13 by admadene         ###   ########.fr       */
+/*   Updated: 2021/10/01 09:38:01 by admadene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,18 +36,14 @@ void	*check_die(void *data)
 			continue;
 		}
 		pthread_mutex_lock(&(philo + i)->mutex_eat);
-		if (get_time_ms() - (philo + i)->last_meal >= philo->info->time_to_die)
+		if (get_time_ms() - (philo + i)->last_meal / 1000 >= philo->info->time_to_die)
 		{
 			
-			printf("ICI -> %ld - philo %d\n", get_time_ms() - philo->info->tzero, (philo + i)->id + 1);
 			pthread_mutex_lock(&(philo->info->mutex_print));
 			philo->info->is_die = 1;
 			die(philo + i);
 			pthread_mutex_unlock(&(philo->info->mutex_print));
-			printf("print unlocked\n");
 			pthread_mutex_unlock(&(philo + i)->mutex_eat);
-			printf("eat unlocked -> %p - philo %d\n", &(philo + i)->mutex_eat, (philo + i)->id + 1);
-			printf("HERE -> %ld\n", get_time_ms() - philo->info->tzero);
 			return (NULL);
 		}
 		pthread_mutex_unlock(&(philo + i)->mutex_eat);
@@ -82,6 +78,7 @@ int	philo_birth(t_philo *philo, t_info *info)
 	i = 1;
 	if (info->nbr_philo > 1)
 		pthread_mutex_lock(&info->mutex_a);
+	usleep(200);
 	while (i < info->nbr_philo)
 	{
 		if (pthread_create(&(philo + i)->thread_philo, \
@@ -102,16 +99,11 @@ int	philo_life(t_philo *philo, t_info *info)
 	if (!philo_birth(philo, info))
 		return (0);
 	i = -1;
-
-	printf("1\n");
 	while (++i < info->nbr_philo)
 	{
 		pthread_join((philo + i)->thread_philo, NULL);
-		printf("join %d\n", i);
 	}
-	printf("2\n");
 	pthread_join(philo->info->thread_monito, NULL);
-	printf("3\n");
 	i = -1;
 	while (++i < info->nbr_philo)
 	{
@@ -143,10 +135,7 @@ int	main(const int ac, char **av)
 		free(philo);
 		return (-1);
 	}
-	printf("eat = %ld nbr %ld\n", info->each_must_eat, info->nbr_philo);
 	philo_life(philo, info);
-	printf("4\n");
-	//check_die(philo);
 	if (pthread_mutex_destroy(&(info->mutex_die)) || \
 	pthread_mutex_destroy(&(info->mutex_print)) || \
 	pthread_mutex_destroy(&(info->mutex_a)))

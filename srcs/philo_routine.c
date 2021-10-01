@@ -6,7 +6,7 @@
 /*   By: admadene <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/22 17:31:50 by admadene          #+#    #+#             */
-/*   Updated: 2021/09/25 02:32:00 by admadene         ###   ########.fr       */
+/*   Updated: 2021/10/01 09:59:09 by admadene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,10 @@ void	philo_thinking(t_philo *philo)
 {
 	philo_print(philo->info->tzero, philo, \
 	"is thinking");
-	while ((philo->nbr_meal > philo->info->j / philo->info->nbr_philo))
-		ft_sleep(philo->info->time_to_eat / 4, &philo->info->is_die, get_time_us());
+	while (!philo->info->is_die && (get_time_us() - philo->last_meal) / 1000 < philo->info->time_to_die / 3 && ((philo->nbr_meal > philo->info->j / philo->info->nbr_philo) || 
+			((philo + left(philo->id, philo->info->nbr_philo))->last_meal < philo->last_meal || \
+			(philo + right(philo->id, philo->info->nbr_philo))->last_meal < philo->last_meal)))
+		usleep(200);
 }
 
 void	philo_take_fork(t_philo *philo)
@@ -54,15 +56,12 @@ void	philo_take_fork(t_philo *philo)
 
 void	philo_eating(t_philo *philo)
 {
-	printf("1-philo %d eating -> %p\n", philo->id + 1, &philo->mutex_eat);
 	pthread_mutex_lock(&philo->mutex_eat);
-	printf("2-philo %d eating\n", philo->id + 1);
 	if (!philo->info->is_die)
-		philo->last_meal = get_time_ms();
+		philo->last_meal = get_time_us();
 	pthread_mutex_unlock(&philo->mutex_eat);
 	philo_print(philo->info->tzero, philo, \
 	"is eating");
-	printf("philo %d die unlock\n", philo->id + 1);
 	if (!philo->info->is_die)
 		ft_sleep(philo->info->time_to_eat, &philo->info->is_die, get_time_us());
 	philo->nbr_meal++;
@@ -98,19 +97,14 @@ void	*routine_philo(void *data)
 		if (philo->info->is_die)
 			return (NULL);
 		philo_take_fork(philo);
-		printf("philo %d fork\n", philo->id + 1);
 		if (philo->info->is_die)
 		{
-			printf("1-philo %d force unlock\n", philo->id + 1);	
 			pthread_mutex_unlock(&philo->mutex_fork);
 			pthread_mutex_unlock(&(philo + left(philo->id, \
 			philo->info->nbr_philo))->mutex_fork);
-			printf("2-philo %d force unlock\n", philo->id + 1);	
 			return (NULL);
 		}
-		printf("1-philo %d eat\n", philo->id + 1);
 		philo_eating(philo);
-		printf("2-philo %d eat\n", philo->id + 1);
 		philo->info->j++;
 		if (philo->info->is_die)
 			return (NULL);
@@ -118,6 +112,5 @@ void	*routine_philo(void *data)
 		if (philo->info->is_die)
 			return (NULL);
 	}
-//	printf("philo %d has stopped\n", philo->id + 1);
 	return (NULL);
 }

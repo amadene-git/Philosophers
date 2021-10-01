@@ -6,7 +6,7 @@
 /*   By: admadene <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/22 17:39:10 by admadene          #+#    #+#             */
-/*   Updated: 2021/09/25 02:39:50 by admadene         ###   ########.fr       */
+/*   Updated: 2021/10/01 09:36:05 by admadene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ int	init_philo(t_philo **philo, t_info *info)
 		(*philo + i)->info = info;
 		(*philo + i)->id = i;
 		(*philo + i)->nbr_meal = 0;
-		(*philo + i)->last_meal = get_time_ms();
+		(*philo + i)->last_meal = get_time_us();
 		if (pthread_mutex_init(&(*philo + i)->mutex_fork, NULL) \
 		|| pthread_mutex_init(&(*philo + i)->mutex_eat, NULL))
 			return (0);
