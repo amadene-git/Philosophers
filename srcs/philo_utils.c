@@ -39,7 +39,8 @@ int	init_info(char **av, t_info **info)
 	if (*av)
 	{
 		(*info)->each_must_eat = ft_atoli(*av);
-		if (!check_nb((*info)->each_must_eat))
+		if (!check_nb((*info)->each_must_eat) || \
+		!(*info)->each_must_eat)
 			return (0);
 	}
 	if (pthread_mutex_init(&((*info)->mutex_die), NULL) \
@@ -70,7 +71,8 @@ int	init_philo(t_philo **philo, t_info *info)
 		(*philo + i)->id = i;
 		(*philo + i)->nbr_meal = 0;
 		(*philo + i)->last_meal = get_time_ms();
-		if (pthread_mutex_init(&(*philo + i)->mutex_fork, NULL))
+		if (pthread_mutex_init(&(*philo + i)->mutex_fork, NULL) \
+		|| pthread_mutex_init(&(*philo + i)->mutex_eat, NULL))
 			return (0);
 		i++;
 	}
@@ -107,6 +109,8 @@ void	philo_print(long int tzero, t_philo *philo, const char *str)
 	int n;
 	int lvl = 0;
 
+	if (philo->info->is_die)
+		return;
 	pthread_mutex_lock(&philo->info->mutex_print);
 	n = litoa_mem(get_time_ms() - tzero, &philo->info->buffer[0], &lvl);
 	philo->info->buffer[n++] = ' ';

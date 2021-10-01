@@ -31,5 +31,5 @@ long int	get_time_us(void)
 void	ft_sleep(long int ms, int *is_dead, long int tzero)
 {
 	while (get_time_us() - tzero < ms * 1000 && !*is_dead)
-		usleep(200);
+		usleep(500);
 }
