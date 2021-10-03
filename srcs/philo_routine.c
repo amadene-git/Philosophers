@@ -23,42 +23,41 @@ void	philo_thinking(t_philo *philo)
 {
 	philo_print(philo->info->tzero, philo, \
 	"is thinking");
-/*	while (!philo->info->is_die && (get_time_us() - philo->last_meal) \
-	/ 1000 < philo->info->time_to_die / 3 && \
-	((philo->nbr_meal > philo->info->j / philo->info->nbr_philo) || \
-	((philo + left(philo->id, philo->info->nbr_philo))->last_meal \
-	< philo->last_meal || (philo + right(philo->id, \
-	philo->info->nbr_philo))->last_meal < philo->last_meal)))
-		usleep(200);
-*/
-	while (!philo->info->is_die && ((philo->info->j + philo->info->nbr_philo)  / philo->info->nbr_philo / 2) % 2 != philo->id % 2)
-		usleep(200);
-	printf("philo j %d\n", philo->info->j);
 }
 
 void	philo_take_fork(t_philo *philo)
 {
+	// printf("fork -> %d | 1\n", philo->id + 1);
 	pthread_mutex_lock(&(philo + left(philo->id, \
 	philo->info->nbr_philo))->mutex_fork);
 	philo_print(philo->info->tzero, philo, \
 	"has taken a fork");
+	// printf("fork -> %d | 2\n", philo->id + 1);
 	if (philo->info->nbr_philo == 1)
 	{
+	// printf("fork -> %d | 3\n", philo->id + 1);
 		pthread_mutex_unlock(&(philo + left(philo->id, \
 		philo->info->nbr_philo))->mutex_fork);
+	// printf("fork -> %d | 4\n", philo->id + 1);
 		ft_sleep(philo->info->time_to_die * 2, \
 		&philo->info->is_die, get_time_us());
 		return ;
 	}
+	// printf("fork -> %d | 5\n", philo->id + 1);
 	if (philo->info->is_die)
 	{
+	// printf("fork -> %d | 6\n", philo->id + 1);
 		pthread_mutex_unlock(&(philo + left(philo->id, \
 		philo->info->nbr_philo))->mutex_fork);
+	// printf("fork -> %d | 7\n", philo->id + 1);
 		return ;
 	}
+	// printf("fork -> %d | 8\n", philo->id + 1);
 	pthread_mutex_lock(&philo->mutex_fork);
 	philo_print(philo->info->tzero, philo, \
 	"has taken a fork");
+	// printf("fork -> %d | 10\n", philo->id + 1);
+
 }
 
 void	philo_eating(t_philo *philo)
@@ -98,14 +97,11 @@ int	mutex_protection(t_philo *philo)
 	return (1);
 }
 
-void	*routine_philo(void *data)
+void	*routine_philo_odd(void *data)
 {
 	t_philo	*philo;
 
 	philo = (t_philo *)data;
-	philo->info->i++;
-	if (philo->info->i == philo->info->nbr_philo / 2)
-		pthread_mutex_unlock(&philo->info->mutex_a);
 	while ((philo->info->each_must_eat == -1 || \
 	philo->nbr_meal < philo->info->each_must_eat) && \
 	!philo->info->is_die)
@@ -113,16 +109,71 @@ void	*routine_philo(void *data)
 		if (philo->info->is_die)
 			return (NULL);
 		philo_thinking(philo);
+		pthread_mutex_lock(&philo->info->mutex_odd);
+		pthread_mutex_unlock(&philo->info->mutex_odd);
 		if (philo->info->is_die)
 			return (NULL);
+		// printf("philo-> %d | 4\n", philo->id + 1);
 		philo_take_fork(philo);
+		philo->info->j++;
+		if (philo->info->j == philo->info->nbr_philo / 2)
+		{
+			philo->info->j = 0;
+			pthread_mutex_unlock(&philo->info->mutex_even);
+			pthread_mutex_lock(&philo->info->mutex_odd);
+		}
+		// printf("philo-> %d | 5\n", philo->id + 1);
 		if (!mutex_protection(philo))
 			return (NULL);
+		// printf("philo-> %d | 6\n", philo->id + 1);
 		philo_eating(philo);
-		philo->info->j++;
+		// printf("philo-> %d | 7\n", philo->id + 1);
 		if (philo->info->is_die)
 			return (NULL);
+		// printf("philo-> %d | 8\n", philo->id + 1);
 		philo_sleeping(philo);
+		// printf("philo-> %d | 9\n", philo->id + 1);
+	}
+	printf("philo->%d out\n", philo->id + 1);
+	return (NULL);
+}
+
+void	*routine_philo_even(void *data)
+{
+	t_philo	*philo;
+
+	philo = (t_philo *)data;
+	while ((philo->info->each_must_eat == -1 || \
+	philo->nbr_meal < philo->info->each_must_eat) && \
+	!philo->info->is_die)
+	{
+		if (philo->info->is_die)
+			return (NULL);
+		philo_thinking(philo);
+		pthread_mutex_lock(&philo->info->mutex_even);
+		pthread_mutex_unlock(&philo->info->mutex_even);
+		if (philo->info->is_die)
+			return (NULL);
+		// printf("philo-> %d | 4\n", philo->id + 1);
+		philo_take_fork(philo);
+		philo->info->j++;
+		if (philo->info->j == philo->info->nbr_philo / 2)
+		{
+			philo->info->j = 0;
+			pthread_mutex_unlock(&philo->info->mutex_odd);
+			pthread_mutex_lock(&philo->info->mutex_even);
+		}
+		// printf("philo-> %d | 5\n", philo->id + 1);
+		if (!mutex_protection(philo))
+			return (NULL);
+		// printf("philo-> %d | 6\n", philo->id + 1);
+		philo_eating(philo);
+		// printf("philo-> %d | 7\n", philo->id + 1);
+		if (philo->info->is_die)
+			return (NULL);
+		// printf("philo-> %d | 8\n", philo->id + 1);
+		philo_sleeping(philo);
+		// printf("philo-> %d | 9\n", philo->id + 1);
 	}
 	return (NULL);
 }

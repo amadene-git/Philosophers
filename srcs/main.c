@@ -74,26 +74,22 @@ int	philo_birth(t_philo *philo, t_info *info)
 	int	i;
 
 	i = 0;
-	pthread_mutex_lock(&info->mutex_a);
 	while (i < info->nbr_philo)
 	{
 		if (pthread_create(&(philo + i)->thread_philo, \
-		NULL, routine_philo, philo + i))
+		NULL, routine_philo_odd, philo + i))
 			return (0);
 		i += 2;
 	}
 	i = 1;
-	if (info->nbr_philo > 1)
-		pthread_mutex_lock(&info->mutex_a);
-	usleep(200);
+	pthread_mutex_lock(&info->mutex_even);
 	while (i < info->nbr_philo)
 	{
 		if (pthread_create(&(philo + i)->thread_philo, \
-		NULL, routine_philo, philo + i))
+		NULL, routine_philo_even, philo + i))
 			return (0);
 		i += 2;
 	}
-	pthread_mutex_unlock(&info->mutex_a);
 	pthread_create(&info->thread_monito, NULL, check_die, philo);
 	return (1);
 }
@@ -108,15 +104,17 @@ int	philo_life(t_philo *philo, t_info *info)
 	i = -1;
 	while (++i < info->nbr_philo)
 	{
+		printf("pre join->%d\n", i);
 		pthread_join((philo + i)->thread_philo, NULL);
+		printf("join->%d\n", i);
 	}
+	printf("thread end \n");
 	pthread_join(philo->info->thread_monito, NULL);
 	i = -1;
 	while (++i < info->nbr_philo)
 	{
-		pthread_mutex_unlock(&(philo + i)->mutex_fork);
-		pthread_mutex_unlock(&(philo + i)->mutex_eat);
 		if (pthread_mutex_destroy(&(philo + i)->mutex_fork) || \
+		pthread_mutex_destroy(&(philo + i)->mutex_prio) || \
 		pthread_mutex_destroy(&(philo + i)->mutex_eat))
 			return (0);
 	}
@@ -145,6 +143,8 @@ int	main(const int ac, char **av)
 	philo_life(philo, info);
 	if (pthread_mutex_destroy(&(info->mutex_die)) || \
 	pthread_mutex_destroy(&(info->mutex_print)) || \
+	pthread_mutex_destroy(&(info->mutex_even)) || \
+	pthread_mutex_destroy(&(info->mutex_odd)) || \
 	pthread_mutex_destroy(&(info->mutex_a)))
 		return (0);
 	free(philo);

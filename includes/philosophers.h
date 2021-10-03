@@ -36,6 +36,8 @@ typedef struct s_info
 	pthread_mutex_t	mutex_print;
 	pthread_mutex_t	mutex_die;
 	pthread_mutex_t	mutex_a;
+	pthread_mutex_t	mutex_even;
+	pthread_mutex_t	mutex_odd;
 }				t_info;
 
 typedef struct s_philo
@@ -44,6 +46,7 @@ typedef struct s_philo
 	pthread_t		thread_philo;
 	pthread_mutex_t	mutex_fork;
 	pthread_mutex_t	mutex_eat;
+	pthread_mutex_t	mutex_prio;
 	t_info			*info;
 	long int		last_meal;
 	int				nbr_meal;
@@ -56,7 +59,8 @@ void		philo_thinking(t_philo *philo);
 void		philo_take_fork(t_philo *philo);
 void		philo_eating(t_philo *philo);
 void		philo_sleeping(t_philo *philo);
-void		*routine_philo(void *data);
+void		*routine_philo_odd(void *data);
+void		*routine_philo_even(void *data);
 int			ft_is_digit(char c);
 long int	ft_atoli(char *str);
 int			check_nb(long int nb);

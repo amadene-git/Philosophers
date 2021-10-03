@@ -45,6 +45,8 @@ int	init_info(char **av, t_info **info)
 	}
 	if (pthread_mutex_init(&((*info)->mutex_die), NULL) \
 	|| pthread_mutex_init(&((*info)->mutex_print), NULL) \
+	|| pthread_mutex_init(&((*info)->mutex_even), NULL) \
+	|| pthread_mutex_init(&((*info)->mutex_odd), NULL) \
 	|| pthread_mutex_init(&((*info)->mutex_a), NULL))
 		return (0);
 	return (1);
@@ -72,6 +74,7 @@ int	init_philo(t_philo **philo, t_info *info)
 		(*philo + i)->nbr_meal = 0;
 		(*philo + i)->last_meal = get_time_us();
 		if (pthread_mutex_init(&(*philo + i)->mutex_fork, NULL) \
+		|| pthread_mutex_init(&(*philo + i)->mutex_prio, NULL) \
 		|| pthread_mutex_init(&(*philo + i)->mutex_eat, NULL))
 			return (0);
 		i++;
