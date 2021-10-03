@@ -57,9 +57,11 @@ void	*check_die(void *data)
 		{
 			i++;
 			a++;
+			if (a == philo->info->nbr_philo)
+				return (NULL);
 			continue ;
 		}
-		if (!die(philo + i))
+		else if (!die(philo + i))
 			return (NULL);
 		if (i < philo->info->nbr_philo - 1)
 			i++;
