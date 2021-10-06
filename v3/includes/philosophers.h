@@ -6,7 +6,7 @@
 /*   By: admadene <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/21 15:46:31 by admadene          #+#    #+#             */
-/*   Updated: 2021/10/06 15:42:01 by admadene         ###   ########.fr       */
+/*   Updated: 2021/10/01 10:31:20 by admadene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,9 +29,15 @@ typedef struct s_info
 	long int		time_to_sleep;
 	long int		each_must_eat;
 	int				is_die;
-	char			buffer[300];
+	int				i;
+	int				j;
+	char			buffer[400];
+	pthread_t		thread_monito;
 	pthread_mutex_t	mutex_print;
 	pthread_mutex_t	mutex_die;
+	pthread_mutex_t	mutex_a;
+	pthread_mutex_t	mutex_even;
+	pthread_mutex_t	mutex_odd;
 }				t_info;
 
 typedef struct s_philo
@@ -40,10 +46,10 @@ typedef struct s_philo
 	pthread_t		thread_philo;
 	pthread_mutex_t	mutex_fork;
 	pthread_mutex_t	mutex_eat;
+	pthread_mutex_t	mutex_prio;
 	t_info			*info;
 	long int		last_meal;
 	int				nbr_meal;
-	pthread_t		thread_monito;
 }				t_philo;
 
 long int	get_time_ms(void);
@@ -53,7 +59,8 @@ void		philo_thinking(t_philo *philo);
 void		philo_take_fork(t_philo *philo);
 void		philo_eating(t_philo *philo);
 void		philo_sleeping(t_philo *philo);
-void		*routine_philo(void *data);
+void		*routine_philo_odd(void *data);
+void		*routine_philo_even(void *data);
 int			ft_is_digit(char c);
 long int	ft_atoli(char *str);
 int			check_nb(long int nb);
@@ -63,6 +70,7 @@ int			init_philo(t_philo **philo, t_info *info);
 int			philo_life(t_philo *philo, t_info *info);
 void		*check_die(void *data);
 void		philo_print(long int tzero, t_philo *philo, const char *str);
-void		die(t_philo *philo);
+int			die(t_philo *philo);
+int			die_2(int *i, int *a);
 int			philo_birth(t_philo *philo, t_info *info);
 #endif

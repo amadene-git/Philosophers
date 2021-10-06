@@ -6,6 +6,7 @@ SRCS	=	srcs/main.c\
 			srcs/philo_utils.c\
 			srcs/utils.c\
 
+
 OBJS	=	${SRCS:.c=.o}
 
 FLAG	=	-Wall -Wextra -Werror

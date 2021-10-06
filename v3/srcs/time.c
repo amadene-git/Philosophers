@@ -1,43 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   get_time.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: admadene <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/09/20 15:55:02 by admadene          #+#    #+#             */
-/*   Updated: 2021/09/20 15:55:52 by admadene         ###   ########.fr       */
+/*   Created: 2021/06/21 16:36:55 by admadene          #+#    #+#             */
+/*   Updated: 2021/10/01 09:39:29 by admadene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-int	ft_is_digit(char c)
+long int	get_time_ms(void)
 {
-	return (c >= '0' && c <= '9');
+	struct timeval	tv;
+
+	gettimeofday(&tv, NULL);
+	return (tv.tv_sec * 1000 + tv.tv_usec / 1000);
 }
 
-long int	ft_atoli(char *str)
+long int	get_time_us(void)
 {
-	long long int	nbr;
-	int				neg;
+	struct timeval	tv;
 
-	neg = 1;
-	nbr = 0;
-	while (*str == ' ')
-		str++;
-	if (*str == '-' && str++)
-		neg = -1;
-	while (ft_is_digit(*str))
-	{
-		nbr += (*str - '0') * neg;
-		nbr *= 10;
-		str++;
-	}
-	while (*str == ' ')
-		str++;
-	if (*str)
-		return (-1);
-	nbr /= 10;
-	return (nbr);
+	gettimeofday(&tv, NULL);
+	return (tv.tv_sec * 1000000 + tv.tv_usec);
+}
+
+void	ft_sleep(long int ms, int *is_dead, long int tzero)
+{
+	while (get_time_us() - tzero < ms * 1000 && !*is_dead)
+		usleep(500);
 }

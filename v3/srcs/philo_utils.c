@@ -6,7 +6,7 @@
 /*   By: admadene <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/22 17:39:10 by admadene          #+#    #+#             */
-/*   Updated: 2021/10/06 15:35:41 by admadene         ###   ########.fr       */
+/*   Updated: 2021/10/06 14:15:46 by admadene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,18 +30,27 @@ int	init_info(char **av, t_info **info)
 	(*info)->time_to_eat = ft_atoli(*(av++));
 	(*info)->time_to_sleep = ft_atoli(*(av++));
 	(*info)->is_die = 0;
+	(*info)->j = 0;
 	if (!check_nb((*info)->nbr_philo) || !check_nb((*info)->time_to_die) \
 	|| !check_nb((*info)->time_to_eat) || !check_nb((*info)->time_to_sleep) \
 	|| !(*info)->nbr_philo)
 		return (0);
+	if (!((*info)->nbr_philo % 2))
+		(*info)->i = -1;
+	else
+		(*info)->i = (*info)->nbr_philo - 1;
 	if (*av)
 	{
 		(*info)->each_must_eat = ft_atoli(*av);
-		if (!check_nb((*info)->each_must_eat))
+		if (!check_nb((*info)->each_must_eat) || \
+		!(*info)->each_must_eat)
 			return (0);
 	}
 	if (pthread_mutex_init(&((*info)->mutex_die), NULL) \
-	|| pthread_mutex_init(&((*info)->mutex_print), NULL))
+	|| pthread_mutex_init(&((*info)->mutex_print), NULL) \
+	|| pthread_mutex_init(&((*info)->mutex_even), NULL) \
+	|| pthread_mutex_init(&((*info)->mutex_odd), NULL) \
+	|| pthread_mutex_init(&((*info)->mutex_a), NULL))
 		return (0);
 	return (1);
 }
@@ -66,14 +75,15 @@ int	init_philo(t_philo **philo, t_info *info)
 		(*philo + i)->info = info;
 		(*philo + i)->id = i;
 		(*philo + i)->nbr_meal = 0;
-		(*philo + i)->last_meal = get_time_ms();
-		if (pthread_mutex_init(&(*philo + i)->mutex_fork, NULL))
+		(*philo + i)->last_meal = get_time_us();
+		if (pthread_mutex_init(&(*philo + i)->mutex_fork, NULL) \
+		|| pthread_mutex_init(&(*philo + i)->mutex_prio, NULL) \
+		|| pthread_mutex_init(&(*philo + i)->mutex_eat, NULL))
 			return (0);
 		i++;
 	}
 	return (1);
 }
-
 
 int	ft_strcpy_endl(const char *src, char *dest)
 {
@@ -119,11 +129,3 @@ void	philo_print(long int tzero, t_philo *philo, const char *str)
 		write(1, philo->info->buffer, n);
 	pthread_mutex_unlock(&philo->info->mutex_print);
 }
-
-/*void	philo_print(long int tzero, int id, const char *str, \
-		pthread_mutex_t *mutex_print)
-{
-	pthread_mutex_lock(mutex_print);
-	printf("%ld %d %s\n", get_time_ms() - tzero, id, str);
-	pthread_mutex_unlock(mutex_print);
-}*/
