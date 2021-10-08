@@ -6,7 +6,7 @@
 /*   By: admadene <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/21 15:45:33 by admadene          #+#    #+#             */
-/*   Updated: 2021/10/06 17:33:24 by admadene         ###   ########.fr       */
+/*   Updated: 2021/10/08 15:30:20 by admadene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,8 @@ int	philo_birth(t_philo *philo, t_info *info)
 			return (0);
 		i += 2;
 	}
-	pthread_mutex_lock(&info->mutex_prio);
+	if (info->nbr_philo > 1)
+		pthread_mutex_lock(&info->mutex_prio);
 	usleep(600);
 	i = 1;
 	while (i < info->nbr_philo)
@@ -115,7 +116,8 @@ int	philo_life(t_philo *philo, t_info *info)
 	pthread_join(philo->info->thread_monito, NULL);
 	i = -1;
 	while (++i < info->nbr_philo)
-		if (pthread_mutex_destroy(&(philo + i)->mutex_fork))
+		if (pthread_mutex_destroy(&(philo + i)->mutex_fork) \
+		 || pthread_mutex_destroy(&(philo + i)->mutex_eat))
 			return (0);
 	return (0);
 }

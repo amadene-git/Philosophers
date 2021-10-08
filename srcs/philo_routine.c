@@ -6,7 +6,7 @@
 /*   By: admadene <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/06 17:41:42 by admadene          #+#    #+#             */
-/*   Updated: 2021/10/06 17:42:01 by admadene         ###   ########.fr       */
+/*   Updated: 2021/10/08 15:38:08 by admadene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,8 @@ void	philo_take_fork(t_philo *philo)
 	{
 		pthread_mutex_unlock(&(philo + left(philo->id, \
 		philo->info->nbr_philo))->mutex_fork);
-		ft_sleep(philo->info->time_to_die * 2, \
-		&(philo->info->is_die), get_time_us());
-		return ;
+		ft_sleep(philo->info->time_to_die + 20, \
+		&philo->info->is_die, get_time_us());
 	}
 	pthread_mutex_lock(&philo->mutex_fork);
 	philo_print(philo->info->tzero, philo, "has taken a fork");

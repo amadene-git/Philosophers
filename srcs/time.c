@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_time.c                                         :+:      :+:    :+:   */
+/*   time.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: admadene <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/06/21 16:36:55 by admadene          #+#    #+#             */
-/*   Updated: 2021/10/06 17:37:54 by admadene         ###   ########.fr       */
+/*   Created: 2021/10/08 15:39:29 by admadene          #+#    #+#             */
+/*   Updated: 2021/10/08 15:40:20 by admadene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,6 @@ long int	get_time_ms(void)
 long int	get_time_us(void)
 {
 	struct timeval	tv;
-	
 	gettimeofday(&tv, NULL);
 	return (tv.tv_sec * 1000000 + tv.tv_usec);
 }

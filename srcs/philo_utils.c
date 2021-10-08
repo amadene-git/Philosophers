@@ -6,7 +6,7 @@
 /*   By: admadene <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/22 17:39:10 by admadene          #+#    #+#             */
-/*   Updated: 2021/10/06 15:35:41 by admadene         ###   ########.fr       */
+/*   Updated: 2021/10/08 15:38:37 by admadene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,6 @@ int	init_philo(t_philo **philo, t_info *info)
 	}
 	return (1);
 }
-
 
 int	ft_strcpy_endl(const char *src, char *dest)
 {
