@@ -60,6 +60,9 @@ void	*routine_philo(void *data)
 	t_philo	*philo;
 
 	philo = (t_philo *)data;
+	philo->info->i++;
+	if (philo->info->i == philo->info->nbr_philo / 2)
+		pthread_mutex_unlock(&philo->info->mutex_prio);
 	while ((philo->info->each_must_eat == -1 || \
 	philo->nbr_meal < philo->info->each_must_eat) && \
 	!philo->info->is_die)

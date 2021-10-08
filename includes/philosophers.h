@@ -29,10 +29,12 @@ typedef struct s_info
 	long int		time_to_sleep;
 	long int		each_must_eat;
 	int				is_die;
+	int			i;
 	char			buffer[300];
 	pthread_t		thread_monito;
 	pthread_mutex_t	mutex_print;
 	pthread_mutex_t	mutex_die;
+	pthread_mutex_t	mutex_prio;
 }				t_info;
 
 typedef struct s_philo

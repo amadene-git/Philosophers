@@ -30,6 +30,7 @@ int	init_info(char **av, t_info **info)
 	(*info)->time_to_eat = ft_atoli(*(av++));
 	(*info)->time_to_sleep = ft_atoli(*(av++));
 	(*info)->is_die = 0;
+	(*info)->i = 0;
 	if (!check_nb((*info)->nbr_philo) || !check_nb((*info)->time_to_die) \
 	|| !check_nb((*info)->time_to_eat) || !check_nb((*info)->time_to_sleep) \
 	|| !(*info)->nbr_philo)
@@ -41,7 +42,8 @@ int	init_info(char **av, t_info **info)
 			return (0);
 	}
 	if (pthread_mutex_init(&((*info)->mutex_die), NULL) \
-	|| pthread_mutex_init(&((*info)->mutex_print), NULL))
+	|| pthread_mutex_init(&((*info)->mutex_print), NULL) \
+	|| pthread_mutex_init(&((*info)->mutex_prio), NULL))
 		return (0);
 	return (1);
 }
@@ -67,7 +69,8 @@ int	init_philo(t_philo **philo, t_info *info)
 		(*philo + i)->id = i;
 		(*philo + i)->nbr_meal = 0;
 		(*philo + i)->last_meal = get_time_ms();
-		if (pthread_mutex_init(&(*philo + i)->mutex_fork, NULL))
+		if (pthread_mutex_init(&(*philo + i)->mutex_fork, NULL) \
+		|| pthread_mutex_init(&(*philo + i)->mutex_eat, NULL))
 			return (0);
 		i++;
 	}
