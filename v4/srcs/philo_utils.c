@@ -6,11 +6,18 @@
 /*   By: admadene <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/22 17:39:10 by admadene          #+#    #+#             */
-/*   Updated: 2021/10/08 15:46:36 by admadene         ###   ########.fr       */
+/*   Updated: 2021/10/08 15:38:37 by admadene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
+
+int	check_nb(long int nb)
+{
+	if (nb >= 0 && nb <= 2147483647)
+		return (1);
+	return (0);
+}
 
 int	init_info(char **av, t_info **info)
 {
@@ -39,6 +46,13 @@ int	init_info(char **av, t_info **info)
 	|| pthread_mutex_init(&((*info)->mutex_prio), NULL))
 		return (0);
 	return (1);
+}
+
+int	left(int index, int max)
+{
+	if (index)
+		return (-1);
+	return (max - 1);
 }
 
 int	init_philo(t_philo **philo, t_info *info)

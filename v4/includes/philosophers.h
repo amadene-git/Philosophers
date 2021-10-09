@@ -6,7 +6,7 @@
 /*   By: admadene <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/21 15:46:31 by admadene          #+#    #+#             */
-/*   Updated: 2021/10/08 15:44:28 by admadene         ###   ########.fr       */
+/*   Updated: 2021/10/06 17:29:01 by admadene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ typedef struct s_info
 	long int		time_to_sleep;
 	long int		each_must_eat;
 	int				is_die;
-	int				i;
+	int			i;
 	char			buffer[300];
 	pthread_t		thread_monito;
 	pthread_mutex_t	mutex_print;
@@ -64,7 +64,6 @@ int			left(int index, int max);
 int			init_philo(t_philo **philo, t_info *info);
 int			philo_life(t_philo *philo, t_info *info);
 void		*check_die(void *data);
-int			die_2(int *i, int *a);
 void		philo_print(long int tzero, t_philo *philo, const char *str);
 int			die(t_philo *philo);
 int			philo_birth(t_philo *philo, t_info *info);

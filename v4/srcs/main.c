@@ -6,7 +6,7 @@
 /*   By: admadene <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/21 15:45:33 by admadene          #+#    #+#             */
-/*   Updated: 2021/10/08 15:44:14 by admadene         ###   ########.fr       */
+/*   Updated: 2021/10/08 15:30:20 by admadene         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,14 +24,21 @@ int	die(t_philo *philo)
 		philo->info->is_die = 1;
 		i = get_time_ms() - philo->info->tzero;
 		printf("%ld %d is died\n", i, philo->id + 1);
-		pthread_mutex_unlock(&philo->mutex_fork);
-		pthread_mutex_unlock(&(philo + left(philo->id, \
-		philo->info->nbr_philo))->mutex_fork);
 		pthread_mutex_unlock(&philo->info->mutex_print);
 		pthread_mutex_unlock(&philo->mutex_eat);
 		return (0);
 	}
 	pthread_mutex_unlock(&philo->mutex_eat);
+	return (1);
+}
+
+int	die_2(int *i, int *a)
+{
+	if (*a == *i - 1)
+		return (0);
+	*a = 0;
+	*i = 0;
+	usleep(1000);
 	return (1);
 }
 
@@ -46,7 +53,7 @@ void	*check_die(void *data)
 	philo = (t_philo *)data;
 	while (!philo->info->is_die)
 	{
-		if (i < philo->info->nbr_philo && (philo + i)->nbr_meal == philo->info->each_must_eat)
+		if ((philo + i)->nbr_meal == philo->info->each_must_eat)
 		{
 			i++;
 			a++;
@@ -54,7 +61,7 @@ void	*check_die(void *data)
 				return (NULL);
 			continue ;
 		}
-		else if (i < philo->info->nbr_philo && !die(philo + i))
+		else if (!die(philo + i))
 			return (NULL);
 		if (i < philo->info->nbr_philo - 1)
 			i++;
@@ -72,8 +79,9 @@ int	philo_birth(t_philo *philo, t_info *info)
 	pthread_mutex_lock(&info->mutex_prio);
 	while (i < info->nbr_philo)
 	{
-		pthread_create(&(philo + i)->thread_philo, \
-		NULL, routine_philo, philo + i);
+		if (pthread_create(&(philo + i)->thread_philo, \
+		NULL, routine_philo, philo + i))
+			return (0);
 		i += 2;
 	}
 	if (info->nbr_philo > 1)
@@ -82,8 +90,9 @@ int	philo_birth(t_philo *philo, t_info *info)
 	i = 1;
 	while (i < info->nbr_philo)
 	{
-		pthread_create(&(philo + i)->thread_philo, \
-		NULL, routine_philo, philo + i);
+		if (pthread_create(&(philo + i)->thread_philo, \
+		NULL, routine_philo, philo + i))
+			return (0);
 		i += 2;
 	}
 	pthread_mutex_unlock(&info->mutex_prio);
@@ -134,9 +143,10 @@ int	main(const int ac, char **av)
 	}
 	philo_life(philo, info);
 	check_die(philo);
-	pthread_mutex_destroy(&(info->mutex_die));
-	pthread_mutex_destroy(&(info->mutex_print));
-	pthread_mutex_destroy(&(info->mutex_prio));
+	if (pthread_mutex_destroy(&(info->mutex_die)) || \
+	pthread_mutex_destroy(&(info->mutex_print)) || \
+	pthread_mutex_destroy(&(info->mutex_prio)))
+		return (0);
 	free(philo);
 	free(info);
 	return (0);
